@@ -1,38 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Login</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="login-container">
-    <h1>Admin Login</h1>
+    <h2>Admin Login</h2>
     <form id="loginForm">
-      <input type="text" id="username" placeholder="Username" required>
-      <input type="password" id="password" placeholder="Password" required>
+      <input id="password" type="password" placeholder="Admin Password" required />
       <button type="submit">Login</button>
     </form>
-    <p id="loginMessage"></p>
+    <p id="error" class="error"></p>
   </div>
-
   <script>
-    const loginForm = document.getElementById('loginForm');
-    const loginMessage = document.getElementById('loginMessage');
-
-    loginForm.addEventListener('submit', function (e) {
+    const validPassword = "admin123";
+    document.getElementById("loginForm").addEventListener("submit", e => {
       e.preventDefault();
-
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value;
-
-      // Hardcoded credentials (you can replace with real validation later)
-      if (username === 'admin' && password === 'admin123') {
-        localStorage.setItem('adminLoggedIn', 'true');
-        window.location = 'admin_dashboard.html';
+      const pass = document.getElementById("password").value;
+      if (pass === validPassword) {
+        localStorage.setItem("adminLoggedIn", "true");
+        window.location.href = "admin_dashboard.html";
       } else {
-        loginMessage.style.color = 'red';
-        loginMessage.textContent = 'Invalid username or password.';
+        document.getElementById("error").textContent = "Invalid password";
       }
     });
   </script>
