@@ -1,87 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
   <h1>Admin Dashboard</h1>
-  <label>Start Time: <input type="time" id="startTime" /></label><br />
-  <label>End Time: <input type="time" id="endTime" /></label><br />
-  <button id="saveTimes">Save Schedule</button>
-  <button id="exportPDF">Export Attendance PDF</button>
-  <button id="refreshPDF">Refresh PDF</button>
-  <button id="clearAttendance">Clear Attendance Data</button>
-  <button id="logout">Logout</button>
+  <button onclick="generatePDF()">Export Attendance PDF</button>
+  <button onclick="logout()">Logout</button>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    if (localStorage.getItem("adminLoggedIn") !== "true") {
-      window.location = "admin_login.html";
+    if (localStorage.getItem('adminLoggedIn') !== 'true') {
+      window.location = 'admin_login.html';
     }
 
-    const inputStart = document.getElementById("startTime");
-    const inputEnd = document.getElementById("endTime");
-    const saved = JSON.parse(localStorage.getItem("timeWindow") || "null");
-    if (saved) {
-      inputStart.value = saved.start;
-      inputEnd.value = saved.end;
-    }
+    // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-    document.getElementById("saveTimes").onclick = () => {
-      if (inputStart.value && inputEnd.value) {
-        localStorage.setItem("timeWindow", JSON.stringify({
-          start: inputStart.value,
-          end: inputEnd.value,
-        }));
-        alert("Saved schedule");
-      } else alert("Enter both times");
-    };
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyADAKEKN-Sc3TGaKkHV08iDSguWQJTj4TU",
+  authDomain: "attendance-app-1b264.firebaseapp.com",
+  projectId: "attendance-app-1b264",
+  storageBucket: "attendance-app-1b264.firebasestorage.app",
+  messagingSenderId: "582507361923",
+  appId: "1:582507361923:web:858eda446e7ac4636ccdb6"
+};
 
-    function generatePDF() {
-      const list = JSON.parse(localStorage.getItem("attendanceList") || "[]");
-      if (!list.length) {
-        alert("No attendance data found.");
-        return;
-      }
+// Initialize Firebase
 
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    async function generatePDF() {
+      const snapshot = await db.collection("attendance").get();
+      const list = snapshot.docs.map((doc, i) => `${i + 1}. EC: ${doc.data().ec}`);
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       doc.setFontSize(16);
-      doc.text("Attendance Report", 14, 20);
-
-      doc.setFontSize(12);
-      list.forEach((ec, i) => {
-        doc.text(`${i + 1}. EC: ${ec}`, 14, 30 + i * 10);
-      });
-
-      const now = new Date();
-      const filename = `attendance_${now.toISOString().slice(0,10)}_${now.getHours()}-${now.getMinutes()}.pdf`;
-      doc.save(filename);
+      doc.text("Attendance Report", 20, 20);
+      list.forEach((line, i) => doc.text(line, 20, 30 + i * 10));
+      doc.save("attendance.pdf");
     }
 
-    document.getElementById("exportPDF").onclick = generatePDF;
-    document.getElementById("refreshPDF").onclick = generatePDF;
-
-    document.getElementById("clearAttendance").onclick = () => {
-      if (confirm("Are you sure you want to clear all attendance data?")) {
-        localStorage.removeItem("attendanceList");
-        localStorage.removeItem("attendanceSubmitted");
-        alert("Attendance data cleared.");
-      }
-    };
-
-    document.getElementById("logout").onclick = () => {
-      localStorage.removeItem("adminLoggedIn");
-      window.location = "admin_login.html";
-    };
-    firebase.database().ref('attendance').once('value', snapshot => {
-  const data = snapshot.val();
-  console.log(data); // Use this data to create PDF
-});
-
-  
+    function logout() {
+      localStorage.removeItem('adminLoggedIn');
+      window.location = 'admin_login.html';
+    }
   </script>
 </body>
 </html>
