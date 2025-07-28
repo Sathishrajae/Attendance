@@ -3,42 +3,33 @@ body {
   margin: 20px;
   background: #f7f7f7;
   color: #333;
+  text-align: center;
 }
-
-h1 {
+h1, h2 {
   color: #222;
 }
-
 .login-container {
-  max-width: 300px;
+  max-width: 350px;
   margin: 100px auto;
   padding: 20px;
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  text-align: center;
 }
-
 input, button {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
 }
-
 button {
-  background: #28a745;
+  background: #007bff;
   color: white;
   border: none;
   cursor: pointer;
-  padding: 10px 20px;
 }
-
 button:hover {
-  background: #218838;
+  background: #0056b3;
 }
-
-#error, #message {
-  margin-top: 10px;
-  font-weight: bold;
+.error {
   color: red;
 }
