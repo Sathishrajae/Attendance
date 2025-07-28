@@ -3,18 +3,15 @@ body {
   margin: 20px;
   background: #f7f7f7;
   color: #333;
-  text-align: center;
-}
-h1, h2 {
-  color: #222;
 }
 .login-container {
-  max-width: 350px;
+  max-width: 300px;
   margin: 100px auto;
   padding: 20px;
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  text-align: center;
 }
 input, button {
   width: 100%;
@@ -22,14 +19,15 @@ input, button {
   margin: 10px 0;
 }
 button {
-  background: #007bff;
+  background: #28a745;
   color: white;
   border: none;
   cursor: pointer;
 }
 button:hover {
-  background: #0056b3;
+  background: #218838;
 }
-.error {
+#error, #message {
   color: red;
+  font-weight: bold;
 }
