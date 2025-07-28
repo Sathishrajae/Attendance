@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+  <label>Start Time: <input type="time" id="startTime"></label><br>
+  <label>End Time: <input type="time" id="endTime"></label><br>
+  <button id="saveTimes">Save Schedule</button>
+  <button id="exportPDF">Export Attendance PDF</button>
+  <button id="refreshPDF">Refresh PDF</button>
+  <button id="clearAttendance">Clear Attendance Data</button>
+  <button id="logout">Logout</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    if (localStorage.getItem('adminLoggedIn') !== 'true') {
+      window.location = 'admin_login.html';
+    }
+
+    const inputStart = document.getElementById('startTime');
+    const inputEnd = document.getElementById('endTime');
+    const saved = JSON.parse(localStorage.getItem('timeWindow') || 'null');
+    if (saved) {
+      inputStart.value = saved.start;
+      inputEnd.value = saved.end;
+    }
+
+    document.getElementById('saveTimes').onclick = () => {
+      if (inputStart.value && inputEnd.value) {
+        localStorage.setItem('timeWindow', JSON.stringify({
+          start: inputStart.value,
+          end: inputEnd.value
+        }));
+        alert('Schedule saved.');
+      } else {
+        alert('Enter both start and end times.');
+      }
+    };
+
+    function generatePDF() {
+      const list = JSON.parse(localStorage.getItem('attendanceList') || '[]');
+      if (!list.length) {
+        alert('No attendance data found.');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFontSize(16);
+      doc.text('Attendance Report', 14, 20);
+
+      doc.setFontSize(12);
+      list.forEach((ec, i) => {
+        doc.text(`${i + 1}. EC: ${ec}`, 14, 30 + i * 10);
+      });
+
+      const now = new Date();
+      const filename = `attendance_${now.toISOString().slice(0,10)}_${now.getHours()}-${now.getMinutes()}.pdf`;
+      doc.save(filename);
+    }
+
+    document.getElementById('exportPDF').onclick = generatePDF;
+    document.getElementById('refreshPDF').onclick = generatePDF;
+
+    document.getElementById('clearAttendance').onclick = () => {
+      if (confirm("Are you sure you want to clear all attendance data?")) {
+        localStorage.removeItem('attendanceList');
+        localStorage.removeItem('attendanceSubmitted');
+        alert("Attendance data cleared.");
+      }
+    };
+
+    document.getElementById('logout').onclick = () => {
+      localStorage.removeItem('adminLoggedIn');
+      window.location = 'admin_login.html';
+    };
+  </script>
+</body>
+</html>

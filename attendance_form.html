@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Attendance Form</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="login-container">
+    <h1>Attendance Form</h1>
+    <form id="attendanceForm">
+      <input type="text" id="ecInput" placeholder="Enter EC Number" required />
+      <button type="submit">Submit Attendance</button>
+    </form>
+    <p id="message"></p>
+  </div>
+
+  <script>
+    const attendanceForm = document.getElementById('attendanceForm');
+    const message = document.getElementById('message');
+
+    if (localStorage.getItem('attendanceSubmitted')) {
+      attendanceForm.style.display = 'none';
+      message.textContent = "You have already submitted your attendance.";
+    }
+
+    attendanceForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const ec = document.getElementById('ecInput').value.trim();
+
+      if (!ec) {
+        message.textContent = "Please enter your EC number.";
+        return;
+      }
+
+      if (localStorage.getItem('attendanceSubmitted')) {
+        message.textContent = "You can only submit attendance once.";
+        return;
+      }
+
+      const list = JSON.parse(localStorage.getItem('attendanceList') || '[]');
+      list.push(ec);
+      localStorage.setItem('attendanceList', JSON.stringify(list));
+      localStorage.setItem('attendanceSubmitted', 'true');
+
+      message.style.color = "green";
+      message.textContent = "Attendance submitted successfully.";
+      attendanceForm.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
