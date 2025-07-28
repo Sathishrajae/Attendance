@@ -76,6 +76,12 @@
       localStorage.removeItem("adminLoggedIn");
       window.location = "admin_login.html";
     };
+    firebase.database().ref('attendance').once('value', snapshot => {
+  const data = snapshot.val();
+  console.log(data); // Use this data to create PDF
+});
+
+  
   </script>
 </body>
 </html>
