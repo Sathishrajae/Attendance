@@ -36,6 +36,16 @@
       form.style.display = "none";
       message.textContent = "Attendance submitted successfully.";
     };
+    const ec = document.getElementById('ec').value;
+const time = new Date().toISOString();
+
+firebase.database().ref('attendance/' + ec).set({
+  ec: ec,
+  timestamp: time
+}).then(() => {
+  alert("Attendance submitted!");
+});
+
   </script>
 </body>
 </html>
