@@ -1,31 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Login</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="login-container">
-    <h2>Admin Login</h2>
-    <form id="loginForm">
-      <input id="password" type="password" placeholder="Admin Password" required />
-      <button type="submit">Login</button>
-    </form>
-    <p id="error" class="error"></p>
+    <h1>Admin Login</h1>
+    <input type="password" id="password" placeholder="Enter Admin Password">
+    <button onclick="login()">Login</button>
+    <p id="message"></p>
   </div>
+
   <script>
-    const validPassword = "admin123";
-    document.getElementById("loginForm").addEventListener("submit", e => {
-      e.preventDefault();
-      const pass = document.getElementById("password").value;
-      if (pass === validPassword) {
-        localStorage.setItem("adminLoggedIn", "true");
-        window.location.href = "admin_dashboard.html";
+    function login() {
+      const pass = document.getElementById('password').value;
+      if (pass === 'admin123') {
+        localStorage.setItem('adminLoggedIn', 'true');
+        window.location = 'admin_dashboard.html';
       } else {
-        document.getElementById("error").textContent = "Invalid password";
+        document.getElementById('message').innerText = 'Incorrect password';
       }
-    });
+    }
   </script>
 </body>
 </html>
