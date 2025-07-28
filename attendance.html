@@ -1,52 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Attendance Form</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Attendance</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="login-container">
-    <h1>Attendance Form</h1>
+    <h2>Student Attendance</h2>
     <form id="attendanceForm">
-      <input type="text" id="ecInput" placeholder="Enter EC Number" required />
-      <button type="submit">Submit Attendance</button>
+      <input id="ecNumber" type="text" placeholder="Enter EC Number" required />
+      <button type="submit">Submit</button>
     </form>
     <p id="message"></p>
   </div>
-
   <script>
-    const attendanceForm = document.getElementById('attendanceForm');
-    const message = document.getElementById('message');
+    const form = document.getElementById("attendanceForm");
+    const message = document.getElementById("message");
 
-    if (localStorage.getItem('attendanceSubmitted')) {
-      attendanceForm.style.display = 'none';
+    if (localStorage.getItem("attendanceSubmitted") === "true") {
+      form.style.display = "none";
       message.textContent = "You have already submitted your attendance.";
     }
 
-    attendanceForm.addEventListener('submit', function (e) {
+    form.onsubmit = e => {
       e.preventDefault();
-      const ec = document.getElementById('ecInput').value.trim();
+      const ec = document.getElementById("ecNumber").value.trim();
+      if (!ec) return;
 
-      if (!ec) {
-        message.textContent = "Please enter your EC number.";
-        return;
-      }
-
-      if (localStorage.getItem('attendanceSubmitted')) {
-        message.textContent = "You can only submit attendance once.";
-        return;
-      }
-
-      const list = JSON.parse(localStorage.getItem('attendanceList') || '[]');
-      list.push(ec);
-      localStorage.setItem('attendanceList', JSON.stringify(list));
-      localStorage.setItem('attendanceSubmitted', 'true');
-
-      message.style.color = "green";
+      const list = JSON.parse(localStorage.getItem("attendanceList") || "[]");
+      if (!list.includes(ec)) list.push(ec);
+      localStorage.setItem("attendanceList", JSON.stringify(list));
+      localStorage.setItem("attendanceSubmitted", "true");
+      form.style.display = "none";
       message.textContent = "Attendance submitted successfully.";
-      attendanceForm.style.display = 'none';
-    });
+    };
   </script>
 </body>
 </html>
